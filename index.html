@@ -28,8 +28,6 @@
   --pm: #c084fc;
   --wp: #9333ea;
 }
-
-  
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {font-family: 'Space Grotesk', sans-serif;background: linear-gradient(135deg,#f5f3ff,#ede9fe);  color: var(--text);min-height: 100vh; overflow-x: hidden;}
 code, .mono { font-family: 'JetBrains Mono', monospace; }
@@ -41,7 +39,7 @@ code, .mono { font-family: 'JetBrains Mono', monospace; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
 /* AUTH */
-.auth-wrap {min-height: 100vh;display: flex;align-items: center;justify-content: center;padding: 20px;background:linear-gradient(rgba(15, 23, 42, 0.82),rgba(15, 23, 42, 0.82)),url('image/bg.jpeg');background-size: cover;background-position: center;background-repeat: no-repeat;}
+.auth-wrap {min-height: 100vh;display: flex;align-items: center;justify-content: center;padding: 20px;background:linear-gradient(rgba(15, 23, 42, 0.82),rgba(15, 23, 42, 0.82)),url('bg.jpeg');background-size: cover;background-position: center;background-repeat: no-repeat;}
 .auth-card {width: 430px;max-width: 95vw;padding: 40px;background: rgba(255,255,255,0.12);backdrop-filter: blur(15px);border: 1px solid rgba(255,255,255,0.2);border-radius: 25px;box-shadow:0 10px 40px rgba(0,0,0,0.4), 0 0 25px rgba(168,85,247,0.25);animation: fadeIn 0.5s ease;}
 .auth-card::after{content:'';position:absolute;width:180px;height:180px;background: radial-gradient(circle, rgba(6,182,212,.25), transparent 70%); bottom:-70px;left:-70px;}
 .auth-logo { text-align: center; margin-bottom: 28px; }
@@ -61,7 +59,7 @@ select option { background: var(--bg); }
 .btn { padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-family: inherit; font-size: 14px; font-weight: 600; transition: all .2s; display: inline-flex; align-items: center; gap: 7px; }
 .btn-primary {background: linear-gradient(135deg,#7c3aed,#a855f7);color: white;border: none;border-radius: 12px;padding: 13px;font-weight: 700;letter-spacing: .5px;transition: all .25s;box-shadow: 0 4px 15px rgba(168,85,247,0.3);}
 .btn-primary:hover {transform: translateY(-2px);box-shadow: 0 8px 20px rgba(168,85,247,0.45);}
-.btn-success { background: var(--green); color: #fff;}
+.btn-success { background: var(--green); color: #fff; }
 .btn-success:hover { background: #059669; }
 .btn-danger { background: var(--red); color: #fff; }
 .btn-danger:hover { background: #dc2626; }
@@ -289,7 +287,7 @@ button:hover{
     rgba(255,255,255,0.78),
     rgba(255,255,255,0.78)
   ),
-  url('image/bg.jpeg');
+  url('bg.jpeg');
 
   background-size: cover;
   background-position: center;
@@ -368,6 +366,38 @@ button:hover{
   background:#fee2e2;
   color:#dc2626;
 }
+
+#modal-editfile label{
+  color:#7c3aed !important;
+  font-weight:700 !important;
+  font-size:15px !important;
+}
+
+#modal-editfile input{
+  background:#fff !important;
+  color:#111 !important;
+  border:2px solid #c084fc !important;
+}
+
+#modal-adduser label{
+  color:#7c3aed !important;
+  font-weight:700 !important;
+  font-size:15px !important;
+}
+
+#modal-adduser input,
+#modal-adduser select{
+  background:#fff !important;
+  color:#111 !important;
+  border:2px solid #c084fc !important;
+  font-weight:600;
+}
+
+#modal-adduser input:focus,
+#modal-adduser select:focus{
+  border-color:#7c3aed !important;
+  outline:none;
+}
 </style>
 </head>
 <body>
@@ -430,7 +460,11 @@ button:hover{
     <button class="nav-item" onclick="navTo('pm',this)"><div class="dot dot-pm"></div><span>Profile Matching</span></button>
     <button class="nav-item" onclick="navTo('wp',this)"><div class="dot dot-wp"></div><span>Weighted Product</span></button>
     <div class="nav-section">Akun</div>
-    <button class="nav-item" onclick="navTo('users',this)">👥 <span>Manajemen User</span></button>
+   <button id="menu-users"
+        class="nav-item"
+        onclick="navTo('users',this)">
+  👥 <span>Manajemen User</span>
+</button>
   </nav>
   <div class="sidebar-footer">
     <button class="nav-item" onclick="doLogout()" style="color:var(--red)">🚪 <span>Logout</span></button>
@@ -532,7 +566,12 @@ button:hover{
 <!-- USERS -->
 <div id="view-users" class="view" style="display:none">
   <div class="card">
-    <div class="card-header"><div class="card-title">👥 Manajemen User</div><button class="btn btn-primary btn-sm" onclick="openAddUserModal()">＋ Tambah User</button></div>
+    <div class="card-header"><div class="card-title">👥 Manajemen User</div>
+    <button class="btn btn-primary btn-sm"
+onclick="openAddUserModal()">
+＋ Tambah User
+</button>
+</div>
     <div id="user-table-wrap"></div>
   </div>
 </div>
@@ -544,73 +583,453 @@ button:hover{
 <!-- MODALS -->
 <div class="overlay" id="modal-newfile">
 <div class="modal">
-  <div class="modal-header"><h3>📄 Buat File Baru</h3><button class="close-btn" onclick="closeModal('modal-newfile')">✕</button></div>
-  <div class="form-group"><label>Nama File</label><input type="text" id="nf-name" placeholder="Contoh: Seleksi Karyawan 2025"></div>
-  <div class="form-group"><label>Metode</label>
-    <select id="nf-method" onchange="updateNewFileDimensions()">
-      <option value="SAW">SAW – Simple Additive Weighting</option>
-      <option value="AHP">AHP – Analytic Hierarchy Process</option>
-      <option value="PM">Profile Matching</option>
-      <option value="WP">WP – Weighted Product</option>
-    </select>
-  </div>
-  <div id="nf-dim-wrap">
-    <div class="grid-2">
-      <div class="form-group"><label>Jumlah Alternatif</label><input type="number" id="nf-rows" value="3" min="2" max="20"></div>
-      <div class="form-group"><label>Jumlah Kriteria</label><input type="number" id="nf-cols" value="3" min="2" max="15"></div>
+
+<div class="modal-header">
+  <h3 style="
+    color:#7c3aed;
+    font-weight:800;
+    font-size:24px;
+  ">
+    📄 Buat File Baru
+  </h3>
+
+  <button class="close-btn"
+    onclick="closeModal('modal-newfile')">
+    ✕
+  </button>
+</div>
+
+<div class="form-group">
+  <label style="color:#7c3aed;font-weight:700">
+    Nama File
+  </label>
+
+  <input type="text"
+    id="nf-name"
+    placeholder="Contoh: Seleksi Karyawan 2025"
+    style="
+      border:2px solid #c084fc;
+      background:white;
+      color:#111;
+      font-weight:600;
+    ">
+</div>
+
+<div class="form-group">
+  <label style="color:#7c3aed;font-weight:700">
+    Metode
+  </label>
+
+  <select id="nf-method"
+    onchange="updateNewFileDimensions()"
+    style="
+      border:2px solid #c084fc;
+      background:white;
+      color:#111;
+      font-weight:600;
+    ">
+    <option value="SAW">SAW – Simple Additive Weighting</option>
+    <option value="AHP">AHP – Analytic Hierarchy Process</option>
+    <option value="PM">Profile Matching</option>
+    <option value="WP">WP – Weighted Product</option>
+  </select>
+</div>
+
+<div id="nf-dim-wrap">
+  <div class="grid-2">
+
+    <div class="form-group">
+      <label style="color:#7c3aed;font-weight:700">
+        Jumlah Alternatif
+      </label>
+
+      <input type="number"
+        id="nf-rows"
+        value="3"
+        min="2"
+        max="20"
+        style="
+          border:2px solid #c084fc;
+          background:white;
+          color:#111;
+          font-weight:600;
+        ">
     </div>
-  </div>
-  <div id="nf-pm-extra" style="display:none">
-    <div class="grid-2">
-      <div class="form-group"><label>Jumlah Alternatif</label><input type="number" id="nf-pm-rows" value="3" min="2" max="20"></div>
-      <div class="form-group"><label>Jumlah Kriteria</label><input type="number" id="nf-pm-cols" value="5" min="2" max="15"></div>
+
+    <div class="form-group">
+      <label style="color:#7c3aed;font-weight:700">
+        Jumlah Kriteria
+      </label>
+
+      <input type="number"
+        id="nf-cols"
+        value="3"
+        min="2"
+        max="15"
+        style="
+          border:2px solid #c084fc;
+          background:white;
+          color:#111;
+          font-weight:600;
+        ">
     </div>
-    <div class="grid-2">
-      <div class="form-group"><label>Jumlah Core Factor</label><input type="number" id="nf-pm-cf" value="3" min="1" max="10"></div>
-      <div class="form-group"><label>Jumlah Secondary Factor</label><input type="number" id="nf-pm-sf" value="2" min="1" max="10"></div>
+
+  </div>
+</div>
+
+<div id="nf-pm-extra" style="display:none">
+
+  <div class="grid-2">
+
+    <div class="form-group">
+      <label style="color:#7c3aed;font-weight:700">
+        Jumlah Alternatif
+      </label>
+
+      <input type="number"
+        id="nf-pm-rows"
+        value="3"
+        min="2"
+        max="20"
+        style="
+          border:2px solid #c084fc;
+          background:white;
+          color:#111;
+          font-weight:600;
+        ">
     </div>
+
+    <div class="form-group">
+      <label style="color:#7c3aed;font-weight:700">
+        Jumlah Kriteria
+      </label>
+
+      <input type="number"
+        id="nf-pm-cols"
+        value="5"
+        min="2"
+        max="15"
+        style="
+          border:2px solid #c084fc;
+          background:white;
+          color:#111;
+          font-weight:600;
+        ">
+    </div>
+
   </div>
-  <div id="nf-ahp-extra" style="display:none">
-    <div class="form-group"><label>Jumlah Kriteria (n×n matrix)</label><input type="number" id="nf-ahp-n" value="3" min="2" max="10"></div>
-    <div class="form-group"><label>Jumlah Alternatif</label><input type="number" id="nf-ahp-alt" value="3" min="2" max="15"></div>
+
+  <div class="grid-2">
+
+    <div class="form-group">
+      <label style="color:#7c3aed;font-weight:700">
+        Jumlah Core Factor
+      </label>
+
+      <input type="number"
+        id="nf-pm-cf"
+        value="3"
+        min="1"
+        max="10"
+        style="
+          border:2px solid #c084fc;
+          background:white;
+          color:#111;
+          font-weight:600;
+        ">
+    </div>
+
+    <div class="form-group">
+      <label style="color:#7c3aed;font-weight:700">
+        Jumlah Secondary Factor
+      </label>
+
+      <input type="number"
+        id="nf-pm-sf"
+        value="2"
+        min="1"
+        max="10"
+        style="
+          border:2px solid #c084fc;
+          background:white;
+          color:#111;
+          font-weight:600;
+        ">
+    </div>
+
   </div>
-  <div class="form-group"><label>Deskripsi (opsional)</label><input type="text" id="nf-desc"></div>
-  <div style="display:flex;gap:8px;justify-content:flex-end">
-    <button class="btn btn-outline" onclick="closeModal('modal-newfile')">Batal</button>
-    <button class="btn btn-primary" onclick="createNewFile()">Buat File</button>
+
+</div>
+
+<div id="nf-ahp-extra" style="display:none">
+
+  <div class="form-group">
+    <label style="color:#7c3aed;font-weight:700">
+      Jumlah Kriteria (n×n Matrix)
+    </label>
+
+    <input type="number"
+      id="nf-ahp-n"
+      value="3"
+      min="2"
+      max="10"
+      style="
+        border:2px solid #c084fc;
+        background:white;
+        color:#111;
+        font-weight:600;
+      ">
   </div>
+
+  <div class="form-group">
+    <label style="color:#7c3aed;font-weight:700">
+      Jumlah Alternatif
+    </label>
+
+    <input type="number"
+      id="nf-ahp-alt"
+      value="3"
+      min="2"
+      max="15"
+      style="
+        border:2px solid #c084fc;
+        background:white;
+        color:#111;
+        font-weight:600;
+      ">
+  </div>
+
+</div>
+
+<div class="form-group">
+  <label style="color:#7c3aed;font-weight:700">
+    Deskripsi (Opsional)
+  </label>
+
+  <input type="text"
+    id="nf-desc"
+    style="
+      border:2px solid #c084fc;
+      background:white;
+      color:#111;
+      font-weight:600;
+    ">
+</div>
+
+<div style="
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  margin-top:20px;
+">
+
+  <button class="btn btn-outline"
+    onclick="closeModal('modal-newfile')">
+    Batal
+  </button>
+
+  <button class="btn btn-primary"
+    onclick="createNewFile()">
+    📄 Buat File
+  </button>
+
+</div>
+
 </div>
 </div>
 
-<div class="overlay" id="modal-editfile">
+
+
+<div class="overlay" id="modal-edituser">
 <div class="modal">
-  <div class="modal-header"><h3>✏️ Edit File</h3><button class="close-btn" onclick="closeModal('modal-editfile')">✕</button></div>
-  <div class="form-group"><label>Nama File</label><input type="text" id="ef-name"></div>
-  <div class="form-group"><label>Deskripsi</label><input type="text" id="ef-desc"></div>
-  <input type="hidden" id="ef-id">
-  <div style="display:flex;gap:8px;justify-content:flex-end">
-    <button class="btn btn-outline" onclick="closeModal('modal-editfile')">Batal</button>
-    <button class="btn btn-success" onclick="saveEditFile()">Simpan</button>
-  </div>
+<div class="modal-header">
+<h3 style="
+color:#7c3aed;
+font-weight:800;
+font-size:24px;
+">
+✏️ Edit User
+</h3>
+<button class="close-btn"
+onclick="closeModal('modal-edituser')">
+✕
+</button>
+</div>
+<div class="form-group">
+<label style="
+display:block;
+color:#7c3aed;
+font-weight:700;
+margin-bottom:8px;
+">
+Nama Lengkap
+</label>
+<input type="text" id="edit-name"
+style="
+border:2px solid #c084fc;
+background:#fff;
+color:#111;
+font-weight:600;
+">
+</div>
+<div class="form-group">
+<label style="
+display:block;
+color:#7c3aed;
+font-weight:700;
+margin-bottom:8px;
+">
+Username
+</label>
+<input type="text" id="edit-user"
+style="
+border:2px solid #c084fc;
+background:#fff;
+color:#111;
+font-weight:600;
+">
+</div>
+<div class="form-group">
+<label style="
+display:block;
+color:#7c3aed;
+font-weight:700;
+margin-bottom:8px;
+">
+Email
+</label>
+<input type="email" id="edit-email"
+style="
+border:2px solid #c084fc;
+background:#fff;
+color:#111;
+font-weight:600;
+">
+</div>
+<div class="form-group">
+<label style="
+display:block;
+color:#7c3aed;
+font-weight:700;
+margin-bottom:8px;
+">
+Role
+</label>
+<select id="edit-role"
+style="
+border:2px solid #c084fc;
+background:#fff;
+color:#111;
+font-weight:600;
+">
+<option>Admin</option>
+<option>User</option>
+</select>
+</div>
+<div class="form-group">
+<label style="
+display:block;
+color:#7c3aed;
+font-weight:700;
+margin-bottom:8px;
+">
+Password
+</label>
+<input type="password" id="edit-pass"
+style="
+border:2px solid #c084fc;
+background:#fff;
+color:#111;
+font-weight:600;
+">
+</div>
+<input type="hidden" id="edit-id">
+<div style="
+display:flex;
+justify-content:flex-end;
+gap:10px;
+margin-top:20px;
+">
+<button class="btn btn-outline"
+onclick="closeModal('modal-edituser')">
+Batal
+</button>
+<button class="btn btn-primary"
+onclick="saveEditUser()">
+💾 Simpan
+</button>
 </div>
 </div>
+</div>
+
 
 <div class="overlay" id="modal-adduser">
 <div class="modal">
-  <div class="modal-header"><h3>👤 Tambah User</h3><button class="close-btn" onclick="closeModal('modal-adduser')">✕</button></div>
-  <div class="form-group"><label>Nama</label><input type="text" id="au-name"></div>
-  <div class="form-group"><label>Username</label><input type="text" id="au-user"></div>
-  <div class="form-group"><label>Email</label><input type="email" id="au-email"></div>
-  <div class="form-group"><label>Role</label><select id="au-role"><option>Admin</option><option>User</option></select></div>
-  <div class="form-group"><label>Password</label><input type="password" id="au-pass"></div>
-  <div style="display:flex;gap:8px;justify-content:flex-end">
-    <button class="btn btn-outline" onclick="closeModal('modal-adduser')">Batal</button>
-    <button class="btn btn-primary" onclick="saveAddUser()">Tambah</button>
-  </div>
+
+<div class="modal-header">
+<h3 style="color:#7c3aed">👤 Tambah User</h3>
+<button class="close-btn"
+onclick="closeModal('modal-adduser')">✕</button>
+</div>
+
+<div class="form-group">
+<label>Nama Lengkap</label>
+<input type="text" id="add-name">
+</div>
+
+<div class="form-group">
+<label>Username</label>
+<input type="text" id="add-user">
+</div>
+
+<div class="form-group">
+<label>Email</label>
+<input type="email" id="add-email">
+</div>
+
+<div class="form-group">
+<label>Role</label>
+<select id="add-role">
+<option>Admin</option>
+<option>User</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>Password</label>
+<input type="password" id="add-pass">
+</div>
+
+<div style="display:flex;justify-content:flex-end;gap:10px">
+<button class="btn btn-outline"
+onclick="closeModal('modal-adduser')">
+Batal
+</button>
+
+<button class="btn btn-primary"
+onclick="saveAddUser()">
+Tambah
+</button>
+</div>
+
 </div>
 </div>
 
 <script>
+
+  function updateSidebarMenu(){
+
+  const menuUsers =
+    document.getElementById('menu-users');
+
+  if(!menuUsers || !DB.currentUser) return;
+
+  if(DB.currentUser.role === 'Admin'){
+    menuUsers.style.display = 'flex';
+  }else{
+    menuUsers.style.display = 'none';
+  }
+}
 
   function toggleAccountMenu(){
   document
@@ -646,12 +1065,36 @@ function lsSet(key, val) {
   try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {}
 }
 
+function saveDB() {
+  localStorage.setItem(
+    'spk_users',
+    JSON.stringify(DB.users)
+  );
+
+  localStorage.setItem(
+    'spk_files',
+    JSON.stringify(DB.files)
+  );
+}
+
+function loadDB() {
+
+  DB.users = JSON.parse(
+    localStorage.getItem('spk_users')
+  ) || defaultUsers;
+
+  DB.files = JSON.parse(
+    localStorage.getItem('spk_files')
+  ) || [];
+
+}
+
 // ==================== DB INIT ====================
 let _nextId = lsGet(LS_NEXTID, 100);
 function uid() { _nextId++; lsSet(LS_NEXTID, _nextId); return _nextId; }
 
 // Default users
-let defaultUsers = [{ id:1, name:'Administrator', username:'admin', email:'admin@spk.com', role:'Admin', password:'admin123' }];
+let defaultUsers = [{ id:1, name:'Aisyah', username:'aisyah', email:'aisyah@spk.com', role:'Admin', password:'icacantik' }];
 let DB = {
   users: lsGet(LS_USERS, defaultUsers),
   files: lsGet(LS_FILES, []),
@@ -659,14 +1102,9 @@ let DB = {
 };
 
 // Make sure admin always exists
-if (!DB.users.find(u => u.username === 'admin')) {
-  DB.users.unshift({ id:1, name:'Administrator', username:'admin', email:'admin@spk.com', role:'Admin', password:'admin123' });
+if (!DB.users.find(u => u.username === 'aisyah')) {
+  DB.users.unshift({ id:1, name:'Aisyah',  username:'aisyah', email:'aisyah@spk.com', role:'Admin', password:'icacantik' });
   lsSet(LS_USERS, DB.users);
-}
-
-function saveDB() {
-  lsSet(LS_USERS, DB.users);
-  lsSet(LS_FILES, DB.files);
 }
 
 // ==================== AUTO LOGIN ====================
@@ -692,22 +1130,56 @@ function switchAuthTab(tab) {
 }
 
 function doLogin() {
-  const u = v('login-user').trim(), p = v('login-pass').trim();
-  if (!u || !p) { toast('Isi username dan password','error'); return; }
-  const user = DB.users.find(x => x.username === u && x.password === p);
-  if (!user) { toast('Username atau password salah','error'); return; }
+  const u = v('login-user').trim();
+  const p = v('login-pass').trim();
+
+  if (!u || !p) {
+    toast('Isi username dan password','error');
+    return;
+  }
+
+  const user = DB.users.find(x =>
+    x.username === u && x.password === p
+  );
+
+  if (!user) {
+    toast('Username atau password salah','error');
+    return;
+  }
+
   DB.currentUser = user;
-  lsSet(LS_SESSION, { id: user.id, password: user.password });
+
+  // ❌ JANGAN SIMPAN PASSWORD
+  lsSet(LS_SESSION, { id: user.id });
+
   initApp();
 }
 
-function initApp() {
-  el('sidebar-user').textContent = DB.currentUser.name;
-  el('topbar-user').textContent = '👤 ' + DB.currentUser.username;
-  showPage('page-app');
-  navTo('dashboard');
-  updateStats();
+function restoreSession() {
+  const session = lsGet(LS_SESSION);
+  if (!session) return;
+
+  const user = DB.users.find(u => u.id === session.id);
+  if (!user) return;
+
+  DB.currentUser = user;
 }
+
+function initApp() {
+  loadDB();          // 🔥 WAJIB: ambil data dari localStorage
+  restoreSession();  // lanjutkan session login
+
+  if (DB.currentUser) {
+    el('page-auth').classList.remove('active');
+    el('page-app').classList.add('active');
+
+    navTo('dashboard');
+    updateStats();
+    renderDashRecent();
+    renderUsers();
+  }
+}
+
 
 function doRegister() {
   const name = v('reg-name').trim(), uname = v('reg-user').trim(), email = v('reg-email').trim(), pass = v('reg-pass').trim(), pass2 = v('reg-pass2').trim();
@@ -738,6 +1210,16 @@ function showPage(id) {
 }
 
 function navTo(view, btnEl) {
+  if (
+    view === 'users' &&
+    DB.currentUser?.role !== 'Admin'
+  ) {
+    toast(
+      'Hanya Admin yang dapat mengakses Manajemen User',
+      'error'
+    );
+    return;
+  }
   document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   const el2 = el('view-'+view);
@@ -783,40 +1265,118 @@ function openNewFileModal(preMethod) {
 }
 
 function createNewFile() {
-  const name = v('nf-name').trim(), method = v('nf-method'), desc = v('nf-desc').trim();
-  if (!name) { toast('Nama file wajib diisi','error'); return; }
-  const file = { id:uid(), name, method, desc, createdAt: new Date().toLocaleString('id-ID'), owner: DB.currentUser.username, data:{} };
+  const name = v('nf-name').trim();
+  const method = v('nf-method');
+  const desc = v('nf-desc').trim();
 
-  if (method==='SAW'||method==='WP') {
-    const rows = parseInt(v('nf-rows')), cols = parseInt(v('nf-cols'));
-    const alts = Array.from({length:rows},(_,i)=>'A'+(i+1));
-    const crits = Array.from({length:cols},(_,i)=>({name:'K'+(i+1),type:'benefit',weight:parseFloat((1/cols).toFixed(2))}));
-    const vals = alts.map(()=>crits.map(()=>0));
-    file.data = {alts,crits,vals};
-  } else if (method==='AHP') {
-    const n = parseInt(v('nf-ahp-n')), altN = parseInt(v('nf-ahp-alt'));
-    const crits = Array.from({length:n},(_,i)=>'C'+(i+1));
-    const alts = Array.from({length:altN},(_,i)=>'Alt'+(i+1));
-    const matrix = Array.from({length:n},(_,i)=>Array.from({length:n},(_,j)=>i===j?1:0));
-    const altMatrices = crits.map(()=>({matrix:Array.from({length:altN},(_,i)=>Array.from({length:altN},(_,j)=>i===j?1:0))}));
-    file.data = {crits,alts,matrix,altMatrices};
-  } else if (method==='PM') {
-    const rows = parseInt(v('nf-pm-rows')), cols = parseInt(v('nf-pm-cols'));
-    const cfN = parseInt(v('nf-pm-cf'));
-    const alts = Array.from({length:rows},(_,i)=>'Alt'+(i+1));
-    const crits = Array.from({length:cols},(_,i)=>({name:'K'+(i+1),type:i<cfN?'CF':'SF'}));
-    const vals = alts.map(()=>crits.map(()=>3));
-    const target = crits.map(()=>3);
-    file.data = {alts,crits,vals,target,cfWeight:0.6,sfWeight:0.4};
+  if (!name) {
+    toast('Nama file wajib diisi', 'error');
+    return;
   }
 
+  if (!DB.currentUser) {
+    toast('User belum login', 'error');
+    return;
+  }
+
+  const file = {
+  id: uid(),
+  name,
+  method,
+  desc,
+  createdAt: new Date().toLocaleString('id-ID'),
+  owner: DB.currentUser.id,   // 🔥 penting
+  data: {}
+};
+  // ================= SAW / WP =================
+  if (method === 'SAW' || method === 'WP') {
+    const rows = parseInt(v('nf-rows')) || 0;
+    const cols = parseInt(v('nf-cols')) || 0;
+
+    if (rows < 2 || cols < 2) {
+      toast('Jumlah alternatif/kriteria tidak valid', 'error');
+      return;
+    }
+
+    const alts = Array.from({ length: rows }, (_, i) => 'A' + (i + 1));
+    const crits = Array.from({ length: cols }, (_, i) => ({
+      name: 'K' + (i + 1),
+      type: 'benefit',
+      weight: parseFloat((1 / cols).toFixed(2))
+    }));
+
+    const vals = alts.map(() => crits.map(() => 0));
+    file.data = { alts, crits, vals };
+  }
+
+  // ================= AHP =================
+  else if (method === 'AHP') {
+    const n = parseInt(v('nf-ahp-n')) || 0;
+    const altN = parseInt(v('nf-ahp-alt')) || 0;
+
+    if (n < 2 || altN < 2) {
+      toast('Input AHP tidak valid', 'error');
+      return;
+    }
+
+    const crits = Array.from({ length: n }, (_, i) => 'C' + (i + 1));
+    const alts = Array.from({ length: altN }, (_, i) => 'Alt' + (i + 1));
+
+    const matrix = Array.from({ length: n }, (_, i) =>
+      Array.from({ length: n }, (_, j) => (i === j ? 1 : 0))
+    );
+
+    const altMatrices = crits.map(() => ({
+      matrix: Array.from({ length: altN }, (_, i) =>
+        Array.from({ length: altN }, (_, j) => (i === j ? 1 : 0))
+      )
+    }));
+
+    file.data = { crits, alts, matrix, altMatrices };
+  }
+
+  // ================= PROFILE MATCHING =================
+  else if (method === 'PM') {
+    const rows = parseInt(v('nf-pm-rows')) || 0;
+    const cols = parseInt(v('nf-pm-cols')) || 0;
+    const cfN = parseInt(v('nf-pm-cf')) || 0;
+
+    if (rows < 2 || cols < 2) {
+      toast('Input PM tidak valid', 'error');
+      return;
+    }
+
+    const alts = Array.from({ length: rows }, (_, i) => 'Alt' + (i + 1));
+    const crits = Array.from({ length: cols }, (_, i) => ({
+      name: 'K' + (i + 1),
+      type: i < cfN ? 'CF' : 'SF'
+    }));
+
+    const vals = alts.map(() => crits.map(() => 3));
+    const target = crits.map(() => 3);
+
+    file.data = {
+      alts,
+      crits,
+      vals,
+      target,
+      cfWeight: 0.6,
+      sfWeight: 0.4
+    };
+  }
+
+  // ================= SAVE =================
   DB.files.push(file);
-  saveDB();
+  saveDB(); // 🔥 penting (sudah benar)
+
   closeModal('modal-newfile');
-  toast('File "'+name+'" berhasil dibuat!');
+  toast(`File "${name}" berhasil dibuat!`);
+
   updateStats();
   openFile(file.id);
 }
+
+
 
 function openFile(id) {
   const file = DB.files.find(f => f.id === id);
@@ -830,10 +1390,26 @@ function openFile(id) {
 }
 
 function deleteFile(id) {
+  const file = DB.files.find(f => f.id === id);
+  if (!file) return;
+
+  // 🔒 cek hak akses
+ const isOwner = file.owner === DB.currentUser.id;
+  const isAdmin = DB.currentUser.role === 'Admin';
+
+  if (!isOwner && !isAdmin) {
+    toast('Kamu tidak punya izin menghapus file ini', 'error');
+    return;
+  }
+
   if (!confirm('Hapus file ini?')) return;
+
   DB.files = DB.files.filter(f => f.id !== id);
+
   saveDB();
+
   toast('File dihapus');
+
   renderFileList();
   renderDashRecent();
   updateStats();
@@ -846,6 +1422,22 @@ function openEditFileModal(id) {
   el('ef-name').value = file.name;
   el('ef-desc').value = file.desc || '';
   openModal('modal-editfile');
+}
+
+function openEditUser(id) {
+
+  const u = DB.users.find(x => x.id === id);
+
+  if (!u) return;
+
+  el('edit-id').value = u.id;
+  el('edit-name').value = u.name;
+  el('edit-user').value = u.username;
+  el('edit-email').value = u.email;
+  el('edit-role').value = u.role;
+  el('edit-pass').value = u.password;
+
+  openModal('modal-edituser');
 }
 
 function saveEditFile() {
@@ -863,43 +1455,88 @@ function saveEditFile() {
 
 function renderFileList() {
   const wrap = el('file-list-container');
-  if (!DB.files.length) { wrap.innerHTML = '<p class="muted">Belum ada file.</p>'; return; }
+const files =
+  DB.currentUser.role === 'Admin'
+    ? DB.files
+    : DB.files.filter(f => f.owner === DB.currentUser.id);
+
+  if (!files.length) {
+    wrap.innerHTML = '<p class="muted">Belum ada file.</p>';
+    return;
+  }
+
   const icons = {SAW:'📊',AHP:'🔢',PM:'🎯',WP:'✖'};
-  wrap.innerHTML = '<div class="file-list">'+DB.files.map(f=>`
-    <div class="file-item">
-      <div class="file-icon fi-${f.method.toLowerCase()}">${icons[f.method]||'📄'}</div>
-      <div class="file-info"><div class="fname">${f.name}</div><div class="fmeta">${f.method} · ${f.desc||'–'} · ${f.createdAt}</div></div>
-      <div class="file-actions">
-        <button class="btn btn-primary btn-sm" onclick="openFile(${f.id})">Buka</button>
-        <button class="btn btn-warn btn-sm" onclick="openEditFileModal(${f.id})">Edit</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteFile(${f.id})">Hapus</button>
+
+  wrap.innerHTML =
+    '<div class="file-list">' +
+   files.map(f => `
+      <div class="file-item">
+        <div class="file-icon fi-${f.method.toLowerCase()}">
+          ${icons[f.method] || '📄'}
+        </div>
+
+        <div class="file-info">
+          <div class="fname">${f.name}</div>
+          <div class="fmeta">
+            ${f.method} · ${f.desc || '–'} · ${f.createdAt}
+            ${DB.currentUser.role === 'Admin' ? ` · 👤 ${f.owner}` : ''}
+          </div>
+        </div>
+
+        <div class="file-actions">
+          <button class="btn btn-primary btn-sm" onclick="openFile(${f.id})">Buka</button>
+          <button class="btn btn-warn btn-sm" onclick="openEditFileModal(${f.id})">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteFile(${f.id})">Hapus</button>
+        </div>
       </div>
-    </div>`).join('')+'</div>';
+    `).join('') +
+    '</div>';
 }
 
 function renderMethodFiles(method) {
   const key = method.toLowerCase() === 'pm' ? 'pm' : method.toLowerCase();
-  const wrap = el(key+'-file-list');
+  const wrap = el(key + '-file-list');
   if (!wrap) return;
-  const files = DB.files.filter(f => f.method === method);
-  if (!files.length) { wrap.innerHTML = '<p class="muted">Belum ada file '+method+'. Klik "+ File Baru" untuk membuat.</p>'; return; }
-  const icons = {SAW:'📊',AHP:'🔢',PM:'🎯',WP:'✖'};
-  wrap.innerHTML = '<div class="file-list">'+files.map(f=>`
-    <div class="file-item">
-      <div class="file-icon fi-${key}">${icons[f.method]}</div>
-      <div class="file-info"><div class="fname">${f.name}</div><div class="fmeta">${f.desc||'–'} · ${f.createdAt}</div></div>
-      <div class="file-actions">
-        <button class="btn btn-primary btn-sm" onclick="renderWorkspace(DB.files.find(f=>f.id===${f.id}))">Buka</button>
-        <button class="btn btn-warn btn-sm" onclick="openEditFileModal(${f.id})">Edit</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteFile(${f.id})">Hapus</button>
+
+  const files = getVisibleFiles().filter(f => f.method === method);
+
+  if (!files.length) {
+    wrap.innerHTML = `<p class="muted">Belum ada file ${method}. Klik "+ File Baru" untuk membuat.</p>`;
+    return;
+  }
+
+  const icons = { SAW:'📊', AHP:'🔢', PM:'🎯', WP:'✖' };
+
+  wrap.innerHTML =
+    '<div class="file-list">' +
+    files.map(f => `
+      <div class="file-item">
+        <div class="file-icon fi-${key}">
+          ${icons[f.method]}
+        </div>
+
+        <div class="file-info">
+          <div class="fname">${f.name}</div>
+          <div class="fmeta">${f.desc || '–'} · ${f.createdAt}</div>
+        </div>
+
+        <div class="file-actions">
+          <button class="btn btn-primary btn-sm" onclick="openFile(${f.id})">Buka</button>
+          <button class="btn btn-warn btn-sm" onclick="openEditFileModal(${f.id})">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteFile(${f.id})">Hapus</button>
+        </div>
       </div>
-    </div>`).join('')+'</div>';
+    `).join('') +
+    '</div>';
 }
 
 function renderDashRecent() {
   const wrap = el('dash-recent-files');
   if (!DB.files.length) { wrap.innerHTML = '<p class="muted">Belum ada file.</p>'; return; }
-  const recent = DB.files.slice(-6).reverse();
+const recent = DB.files
+  .filter(f => f.owner === DB.currentUser.id)
+  .slice(-6)
+  .reverse();
   const icons = {SAW:'📊',AHP:'🔢',PM:'🎯',WP:'✖'};
   wrap.innerHTML = '<div class="file-list">'+recent.map(f=>`
     <div class="file-item" onclick="openFile(${f.id})" style="cursor:pointer">
@@ -911,10 +1548,22 @@ function renderDashRecent() {
 }
 
 function updateStats() {
-  el('stat-files').textContent = DB.files.length;
+  const files = DB.currentUser.role === 'Admin'
+    ? DB.files
+    : DB.files.filter(f => f.owner === DB.currentUser.id);
+
+  el('stat-files').textContent = files.length;
   el('stat-users').textContent = DB.users.length;
 }
 
+function getVisibleFiles() {
+  if (DB.currentUser.role === 'Admin') {
+    return DB.files;
+  }
+  return DB.files.filter(f =>
+    f.owner === DB.currentUser.id
+  );
+}
 // ==================== RENDER WORKSPACE ====================
 function renderWorkspace(file) {
   if (!file) return;
@@ -1261,60 +1910,42 @@ function calcAHPCI(matrix, evn) {
 
   const n = matrix.length;
 
-  // =========================
-  // WEIGHTED SUM VECTOR
-  // =========================
-  const weighted = [];
+  // ==========================
+  // JUMLAH TIAP KOLOM
+  // ==========================
+  const colTotals = [];
 
-  for(let i = 0; i < n; i++) {
+  for (let j = 0; j < n; j++) {
 
     let total = 0;
 
-    for(let j = 0; j < n; j++) {
-
-      total += matrix[i][j] * evn[j];
-
+    for (let i = 0; i < n; i++) {
+      total += matrix[i][j];
     }
 
-    weighted.push(total);
-
+    colTotals.push(total);
   }
 
-  // =========================
-  // CONSISTENCY VECTOR
-  // =========================
-  const consistency = [];
+  // ==========================
+  // λ MAX
+  // λmax = Σ(EVN × jumlah kolom)
+  // ==========================
+  let emax = 0;
 
-  for(let i = 0; i < n; i++) {
-
-    consistency.push(
-      weighted[i] / evn[i]
-    );
-
+  for (let i = 0; i < n; i++) {
+    emax += evn[i] * colTotals[i];
   }
 
-  // =========================
-  // LAMBDA MAX
-  // =========================
-  let lambda = 0;
-
-  for(let i = 0; i < n; i++) {
-
-    lambda += consistency[i];
-
-  }
-
-  const emax = lambda / n;
-
-  // =========================
-  // CONSISTENCY INDEX
-  // =========================
+  // ==========================
+  // CI
+  // ==========================
   const ci =
-    (emax - n) / (n - 1);
+    (emax - n) /
+    (n - 1);
 
-  // =========================
+  // ==========================
   // RANDOM INDEX
-  // =========================
+  // ==========================
   const RI = {
     1:0,
     2:0,
@@ -1325,24 +1956,27 @@ function calcAHPCI(matrix, evn) {
     7:1.32,
     8:1.41,
     9:1.45,
-    10:1.49
+    10:1.49,
+    11:1.51,
+    12:1.48,
+    13:1.56,
+    14:1.57,
+    15:1.59
   };
 
-  // =========================
-  // CONSISTENCY RATIO
-  // =========================
+  const ir = RI[n] || 1.59;
+
+  // ==========================
+  // CR
+  // ==========================
   const cr =
-    RI[n] !== 0
-      ? ci / RI[n]
-      : 0;
+    ir === 0
+      ? 0
+      : ci / ir;
 
   return {
 
-    weighted: weighted.map(v =>
-      +v.toFixed(6)
-    ),
-
-    consistency: consistency.map(v =>
+    colTotals: colTotals.map(v =>
       +v.toFixed(6)
     ),
 
@@ -1353,7 +1987,6 @@ function calcAHPCI(matrix, evn) {
     cr: +cr.toFixed(6)
 
   };
-
 }
 
 function calcAHP(id) {
@@ -1506,20 +2139,27 @@ function calcAHP(id) {
 
   <div class="formula-box">
 
-    Consistency Vector:
-    ${critCI.consistency.map(v=>v.toFixed(4)).join(' | ')}
+    Jumlah Kolom:
+${critCI.colTotals.map(v=>v.toFixed(4)).join(' | ')}
 
-    <br><br>
-    λmax = ${critCI.emax.toFixed(4)}
-    |
-    CI = ${critCI.ci.toFixed(4)}
-    |
-    CR = <b>${critCI.cr.toFixed(4)}</b>
+<br><br>
 
-    ${critCI.cr < 0.1
-      ? '✅ Konsisten'
-      : '⚠ Tidak Konsisten'}
+λmax =
+${critCI.emax.toFixed(4)}
 
+|
+
+CI =
+${critCI.ci.toFixed(4)}
+
+|
+
+CR =
+<b>${critCI.cr.toFixed(4)}</b>
+
+${critCI.cr < 0.1
+ ? ' ✅ Konsisten'
+ : ' ⚠ Tidak Konsisten'}
   </div>
   `;
 
@@ -2841,47 +3481,186 @@ function exportAHPExcel(file, wb) {
 // ==================== USERS ====================
 function renderUsers() {
   const wrap = el('user-table-wrap');
-  let h = `<div class="tbl-wrap"><table><tr><th>#</th><th>Nama</th><th>Username</th><th>Email</th><th>Role</th><th>Aksi</th></tr>`;
-  DB.users.forEach((u,i) => {
-    h += `<tr><td>${i+1}</td><td>${u.name}</td><td>${u.username}</td><td>${u.email}</td><td>${u.role}</td>
-      <td><div class="flex gap8">
-        <button class="btn btn-warn btn-sm" onclick="openEditUser(${u.id})">Edit</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteUser(${u.id})" ${DB.currentUser?.id===u.id?'disabled':''}>Hapus</button>
-      </div></td></tr>`;
+
+  let h = `
+  <div class="tbl-wrap">
+    <table>
+      <tr>
+        <th>#</th>
+        <th>Nama</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Aksi</th>
+      </tr>`;
+
+  DB.users.forEach((u, i) => {
+    h += `
+    <tr>
+      <td>${i + 1}</td>
+      <td>${u.name}</td>
+      <td>${u.username}</td>
+      <td>${u.email}</td>
+      <td>${u.role}</td>
+      <td>
+        <div class="flex gap8">
+          <button class="btn btn-warn btn-sm"
+            onclick="openEditUser(${u.id})">
+            Edit
+          </button>
+
+          <button class="btn btn-danger btn-sm"
+            onclick="deleteUser(${u.id})"
+            ${DB.currentUser.id === u.id ? 'disabled' : ''}>
+            Hapus
+          </button>
+        </div>
+      </td>
+    </tr>`;
   });
-  h += '</table></div>';
+
+  h += `
+    </table>
+  </div>`;
+
   wrap.innerHTML = h;
 }
 
-function openAddUserModal() { el('au-name').value='';el('au-user').value='';el('au-email').value='';el('au-pass').value='';openModal('modal-adduser'); }
-function saveAddUser() {
-  const name=v('au-name').trim(), uname=v('au-user').trim(), email=v('au-email').trim(), role=v('au-role'), pass=v('au-pass').trim();
-  if(!name||!uname||!pass){toast('Isi semua field wajib','error');return;}
-  if(DB.users.find(x=>x.username===uname)){toast('Username sudah ada','error');return;}
-  DB.users.push({id:uid(),name,username:uname,email,role,password:pass});
-  saveDB();
-  closeModal('modal-adduser');
-  toast('User berhasil ditambahkan');
-  renderUsers();
-  updateStats();
-}
+function openAddUserModal() {
 
-function openEditUser(id) {
-  const u = DB.users.find(x=>x.id===id);
-  if(!u) return;
-  el('au-name').value=u.name;el('au-user').value=u.username;el('au-email').value=u.email;el('au-role').value=u.role;el('au-pass').value='';
+  el('add-name').value = '';
+  el('add-user').value = '';
+  el('add-email').value = '';
+  el('add-role').value = 'User';
+  el('add-pass').value = '';
+
   openModal('modal-adduser');
 }
 
-function deleteUser(id) {
-  if(DB.currentUser?.id===id){toast('Tidak bisa hapus akun sendiri','error');return;}
-  if(!confirm('Hapus user ini?')) return;
-  DB.users=DB.users.filter(u=>u.id!==id);
+function saveAddUser() {
+
+  const name = el('add-name').value.trim();
+  const username = el('add-user').value.trim();
+  const email = el('add-email').value.trim();
+  const role = el('add-role').value;
+  const password = el('add-pass').value.trim();
+
+  if (!name || !username || !password) {
+    toast('Isi semua field wajib', 'error');
+    return;
+  }
+
+  if (DB.users.find(u => u.username === username)) {
+    toast('Username sudah digunakan', 'error');
+    return;
+  }
+
+  DB.users.push({
+    id: uid(),
+    name,
+    username,
+    email,
+    role,
+    password
+  });
+
   saveDB();
-  toast('User dihapus');
+
+  closeModal('modal-adduser');
+
   renderUsers();
   updateStats();
+
+  toast('User berhasil ditambahkan');
 }
+
+
+function openEditUser(id) {
+
+  const u = DB.users.find(x => x.id === id);
+
+  if (!u) return;
+
+  el('edit-id').value = u.id;
+  el('edit-name').value = u.name;
+  el('edit-user').value = u.username;
+  el('edit-email').value = u.email;
+  el('edit-role').value = u.role;
+  el('edit-pass').value = u.password;
+
+  openModal('modal-edituser');
+}
+
+function saveEditUser() {
+
+  const id = parseInt(el('edit-id').value);
+
+  const u = DB.users.find(x => x.id === id);
+
+  if (!u) return;
+
+  const name = el('edit-name').value.trim();
+  const username = el('edit-user').value.trim();
+  const email = el('edit-email').value.trim();
+  const role = el('edit-role').value;
+  const password = el('edit-pass').value.trim();
+
+  if (!name || !username || !password) {
+    toast('Isi semua field wajib', 'error');
+    return;
+  }
+
+  const duplicate = DB.users.find(x =>
+    x.username === username &&
+    x.id !== id
+  );
+
+  if (duplicate) {
+    toast('Username sudah digunakan', 'error');
+    return;
+  }
+
+  u.name = name;
+  u.username = username;
+  u.email = email;
+  u.role = role;
+  u.password = password;
+
+  saveDB();
+
+  closeModal('modal-edituser');
+
+  renderUsers();
+
+  toast('User berhasil diperbarui');
+}
+
+
+function deleteUser(id) {
+
+  const user = DB.users.find(u => u.id === id);
+
+  if (!user) return;
+
+  if (DB.currentUser.id === id) {
+    toast('Tidak bisa menghapus akun yang sedang login', 'error');
+    return;
+  }
+
+  if (!confirm(`Hapus user "${user.username}" ?`)) {
+    return;
+  }
+
+  DB.users = DB.users.filter(u => u.id !== id);
+
+  saveDB();
+
+  renderUsers();
+  updateStats();
+
+  toast('User berhasil dihapus');
+}
+
 
 // ==================== DEMO DATA ====================
 function loadExamples() {
