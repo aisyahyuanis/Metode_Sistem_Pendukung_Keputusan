@@ -39,7 +39,7 @@ code, .mono { font-family: 'JetBrains Mono', monospace; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
 /* AUTH */
-.auth-wrap {min-height: 100vh;display: flex;align-items: center;justify-content: center;padding: 20px;background:linear-gradient(rgba(15, 23, 42, 0.82),rgba(15, 23, 42, 0.82)),url('bg.jpeg');background-size: cover;background-position: center;background-repeat: no-repeat;}
+.auth-wrap {min-height: 100vh;display: flex;align-items: center;justify-content: center;padding: 20px;background:linear-gradient(rgba(15, 23, 42, 0.82),rgba(15, 23, 42, 0.82)),url('image/bg.jpeg');background-size: cover;background-position: center;background-repeat: no-repeat;}
 .auth-card {width: 430px;max-width: 95vw;padding: 40px;background: rgba(255,255,255,0.12);backdrop-filter: blur(15px);border: 1px solid rgba(255,255,255,0.2);border-radius: 25px;box-shadow:0 10px 40px rgba(0,0,0,0.4), 0 0 25px rgba(168,85,247,0.25);animation: fadeIn 0.5s ease;}
 .auth-card::after{content:'';position:absolute;width:180px;height:180px;background: radial-gradient(circle, rgba(6,182,212,.25), transparent 70%); bottom:-70px;left:-70px;}
 .auth-logo { text-align: center; margin-bottom: 28px; }
@@ -287,7 +287,7 @@ button:hover{
     rgba(255,255,255,0.78),
     rgba(255,255,255,0.78)
   ),
-  url('bg.jpeg');
+  url('image/bg.jpeg');
 
   background-size: cover;
   background-position: center;
@@ -963,7 +963,49 @@ onclick="saveEditUser()">
 </div>
 
 
+<!-- Modal Add User -->
 <div class="overlay" id="modal-adduser">
+  <div class="modal">
+    ...
+  </div>
+</div>
+
+<!-- Modal Edit File -->
+<div class="overlay" id="modal-editfile">
+  <div class="modal">
+
+    <div class="modal-header">
+      <h3 style="color:#7c3aed">✏️ Edit File</h3>
+      <button class="close-btn"
+      onclick="closeModal('modal-editfile')">✕</button>
+    </div>
+
+    <div class="form-group">
+      <label>Nama File</label>
+      <input type="text" id="ef-name">
+    </div>
+
+    <div class="form-group">
+      <label>Deskripsi</label>
+      <input type="text" id="ef-desc">
+    </div>
+
+    <input type="hidden" id="ef-id">
+
+    <div style="display:flex;justify-content:flex-end;gap:10px">
+      <button class="btn btn-outline"
+      onclick="closeModal('modal-editfile')">
+      Batal
+      </button>
+
+      <button class="btn btn-primary"
+      onclick="saveEditFile()">
+      💾 Simpan
+      </button>
+    </div>
+
+  </div>
+</div>
 <div class="modal">
 
 <div class="modal-header">
@@ -1245,7 +1287,16 @@ function toast(msg, type='success') {
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2800);
 }
-function openModal(id) { el(id).classList.add('open'); }
+function openModal(id) {
+  const modal = el(id);
+
+  if (!modal) {
+    console.error("Modal tidak ditemukan:", id);
+    return;
+  }
+
+  modal.classList.add('open');
+}
 function closeModal(id) { el(id).classList.remove('open'); }
 
 // ==================== FILE MANAGEMENT ====================
@@ -4220,6 +4271,8 @@ function downloadPDF(){
   </html>
 
   `);
+
+  win.document.close();
 
 }
 
