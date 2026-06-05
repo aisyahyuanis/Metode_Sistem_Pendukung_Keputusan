@@ -233,11 +233,9 @@ table td {
 }
 
 .auth-logo p,
-label,
 .muted {
   color: #f1f5f9 !important;
 }
-
 .auth-tab {
   color: #d1d5db;
   transition: 0.3s;
@@ -395,6 +393,27 @@ button:hover{
 
 #modal-adduser input:focus,
 #modal-adduser select:focus{
+  border-color:#7c3aed !important;
+  outline:none;
+}
+
+/* Modal Buat File Baru */
+#modal-newfile label{
+  color:#7c3aed !important;
+  font-weight:700 !important;
+  font-size:15px !important;
+}
+
+#modal-newfile input,
+#modal-newfile select{
+  background:#fff !important;
+  color:#111 !important;
+  border:2px solid #c084fc !important;
+  font-weight:600;
+}
+
+#modal-newfile input:focus,
+#modal-newfile select:focus{
   border-color:#7c3aed !important;
   outline:none;
 }
@@ -600,7 +619,7 @@ onclick="openAddUserModal()">
 </div>
 
 <div class="form-group">
-  <label style="color:#7c3aed;font-weight:700">
+  <label >
     Nama File
   </label>
 
@@ -616,7 +635,7 @@ onclick="openAddUserModal()">
 </div>
 
 <div class="form-group">
-  <label style="color:#7c3aed;font-weight:700">
+  <label >
     Metode
   </label>
 
@@ -639,7 +658,7 @@ onclick="openAddUserModal()">
   <div class="grid-2">
 
     <div class="form-group">
-      <label style="color:#7c3aed;font-weight:700">
+      <label>
         Jumlah Alternatif
       </label>
 
@@ -657,7 +676,7 @@ onclick="openAddUserModal()">
     </div>
 
     <div class="form-group">
-      <label style="color:#7c3aed;font-weight:700">
+      <label>
         Jumlah Kriteria
       </label>
 
@@ -963,13 +982,6 @@ onclick="saveEditUser()">
 </div>
 
 
-<!-- Modal Add User -->
-<div class="overlay" id="modal-adduser">
-  <div class="modal">
-    ...
-  </div>
-</div>
-
 <!-- Modal Edit File -->
 <div class="overlay" id="modal-editfile">
   <div class="modal">
@@ -1006,6 +1018,10 @@ onclick="saveEditUser()">
 
   </div>
 </div>
+
+
+<!-- Modal Add User -->
+<div class="overlay" id="modal-adduser">
 <div class="modal">
 
 <div class="modal-header">
@@ -1013,7 +1029,6 @@ onclick="saveEditUser()">
 <button class="close-btn"
 onclick="closeModal('modal-adduser')">✕</button>
 </div>
-
 <div class="form-group">
 <label>Nama Lengkap</label>
 <input type="text" id="add-name">
@@ -1054,6 +1069,8 @@ Tambah
 </button>
 </div>
 
+</div>
+</div>
 </div>
 </div>
 
