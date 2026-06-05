@@ -417,6 +417,12 @@ button:hover{
   border-color:#7c3aed !important;
   outline:none;
 }
+
+.mc-desc{
+  text-align: justify;
+  text-justify: inter-word;
+  line-height: 1.7;
+}
 </style>
 </head>
 <body>
@@ -500,7 +506,7 @@ button:hover{
     <span id="topbar-user"></span> 
   </button>
   <div class="account-dropdown" id="account-dropdown">
- <div class="account-item"onclick="openAccountModal()">  👤 Akun Saya</div>
+ <div class="account-item"onclick="openAccountModal()">  Akun Saya</div>
 <div class="account-item logout-item"onclick="doLogout()">🚪 Logout
     </div>
   </div>
@@ -519,10 +525,10 @@ button:hover{
   <div class="card">
     <div class="card-header"><div class="card-title">🚀 Mulai Cepat</div></div>
     <div class="method-selector">
-      <div class="method-card" onclick="openNewFileModal('SAW')"><div class="mc-icon">📊</div><div class="mc-name">SAW</div><div class="mc-desc">Simple Additive Weighting – normalisasi + bobot + perangkingan</div></div>
-      <div class="method-card" onclick="openNewFileModal('AHP')"><div class="mc-icon">🔢</div><div class="mc-name">AHP</div><div class="mc-desc">Analytic Hierarchy Process – perbandingan berpasangan + eigen vector</div></div>
-      <div class="method-card" onclick="openNewFileModal('PM')"><div class="mc-icon">🎯</div><div class="mc-name">Profile Matching</div><div class="mc-desc">Gap analysis + Core/Secondary Factor + perangkingan</div></div>
-      <div class="method-card" onclick="openNewFileModal('WP')"><div class="mc-icon">✖</div><div class="mc-name">Weighted Product</div><div class="mc-desc">Perkalian berpangkat bobot – vektor S dan vektor V</div></div>
+      <div class="method-card" onclick="openNewFileModal('SAW')"><div class="mc-icon">📊</div><div class="mc-name">Simple Additive Weighting</div><div class="mc-desc">Metode Sistem Pendukung Keputusan (SPK) yang digunakan untuk menentukan alternatif terbaik berdasarkan penjumlahan nilai setiap kriteria yang telah dinormalisasi dan dikalikan dengan bobotnya. Metode ini bekerja dengan memberikan bobot pada setiap kriteria, kemudian menghitung nilai akhir setiap alternatif melalui proses penjumlahan terbobot. Semakin besar nilai akhir yang diperoleh, semakin baik alternatif tersebut. SAW dikenal karena proses perhitungannya yang sederhana, mudah dipahami, dan banyak digunakan dalam pemilihan beasiswa, siswa berprestasi, maupun seleksi penerima bantuan.</div></div>
+      <div class="method-card" onclick="openNewFileModal('AHP')"><div class="mc-icon">🔢</div><div class="mc-name">Analytical Hierarchy Process</div><div class="mc-desc">Metode Sistem Pendukung Keputusan yang digunakan untuk menentukan prioritas atau bobot kriteria melalui perbandingan berpasangan antar kriteria. Metode ini menyusun permasalahan ke dalam bentuk hierarki sehingga proses pengambilan keputusan menjadi lebih terstruktur. Selain menghasilkan bobot prioritas, AHP juga menyediakan pengujian konsistensi untuk memastikan bahwa penilaian yang diberikan tidak bertentangan. Metode ini sering digunakan untuk menentukan bobot kriteria sebelum diterapkan pada metode lain seperti SAW, WP, atau Profile Matching.</div></div>
+      <div class="method-card" onclick="openNewFileModal('PM')"><div class="mc-icon">🎯</div><div class="mc-name">Profile Matching</div><div class="mc-desc">Metode Sistem Pendukung Keputusan yang digunakan untuk membandingkan profil suatu alternatif dengan profil ideal yang telah ditentukan sebelumnya. Metode ini berfokus pada perhitungan selisih (gap) antara nilai aktual dan nilai standar, di mana semakin kecil nilai gap yang dihasilkan maka semakin tinggi tingkat kesesuaian alternatif tersebut dengan profil yang diharapkan. Profile Matching banyak diterapkan dalam proses seleksi karyawan, promosi jabatan, penentuan beasiswa, dan berbagai bentuk penilaian yang memerlukan pencocokan terhadap kriteria ideal.</div></div>
+      <div class="method-card" onclick="openNewFileModal('WP')"><div class="mc-icon">✖</div><div class="mc-name">Weighted Product</div><div class="mc-desc">Metode Sistem Pendukung Keputusan yang menentukan alternatif terbaik menggunakan konsep perkalian nilai kriteria yang dipangkatkan dengan bobot masing-masing kriteria. Berbeda dengan SAW yang menggunakan penjumlahan, WP menggunakan perkalian sehingga dapat menunjukkan perbandingan relatif antar kriteria dengan lebih baik. Alternatif yang memiliki nilai preferensi tertinggi dianggap sebagai pilihan terbaik. Metode ini sering digunakan dalam pemilihan produk, supplier, atau penilaian kinerja karena mampu mengolah data dengan skala yang berbeda.</div></div>
     </div>
   </div>
   <div class="card">
@@ -4171,7 +4177,8 @@ h2{
 }
   
     </style>
-
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   </head>
 
   <body>
